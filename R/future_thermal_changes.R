@@ -38,14 +38,7 @@ identical(names(acc.meds.h), names(acc.meds.p2))
 identical(acc.meds.h$site_id, acc.meds.p1$site_id)
 identical(acc.meds.h$site_id, acc.meds.p2$site_id)
 
+# still working on subtracting the two data frames
 acc.h1p1 <- left_join(acc.meds.h, acc.meds.p1, by = 'site_id')
 acc.h1p1.diff <- acc.h1p1[,grepl("*\\.x$", names(acc.h1p1)) - acc.h1p1[,grepl("*\\.y$", names(acc.h1p1))]]
   
-# calculate trends
-slope = function(x,y){
-  coefficients(lm(y~x))[[2]]*10
-}
-
-# filter years of interest
-# group by lake
-# calculate slopes for all vars
