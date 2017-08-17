@@ -6,13 +6,13 @@ library(data.table)
 library(dplyr)
 # read in driver data
 
-setwd("C:/Users/soliver/Documents/data/NLDAS")
+setwd("~/data/NLDAS")
 
 # get file list
 files <- list.files()
 n <- length(files)
 drop.cols <- c('Rain', 'Snow')
-cutoffs <- c(0, seq(from = 1000, to = 10000, by = 1000), n-1)
+cutoffs <- c(0, seq(from = 1000, to = 10000, by = 1000), n)
 
 slope = function(x,y){
   coefficients(lm(y~x))[[2]]*10
@@ -23,7 +23,7 @@ trends <- data.frame(site_id = NA, AirTemp_min = NA, AirTemp_max = NA, AirTemp_m
 
 for (i in 1:(length(cutoffs)-1)) {
   # read in subset of csvs
-  temp.files <- files[cutoffs[i]+1]:cutoffs[i+1]]
+  temp.files <- files[(cutoffs[i]+1):(cutoffs[i+1])]
   lake.names <- gsub('\\.csv', '', temp.files)
   myfiles <- lapply(temp.files, readr::read_csv)
   df <- rbindlist(myfiles)
