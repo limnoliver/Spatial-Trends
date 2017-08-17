@@ -18,10 +18,8 @@ proj.string <- '+init=epsg:2860'
 # other.sp <- map.sp[!names(map.sp) %in% c('minnesota','wisconsin','michigan'), ] 
 
 setwd("~/data")
-lakes.sp <- readOGR(dsn = "C:/Users/soliver/Documents/data", layer = "model_lakes") %>% 
-  spTransform(CRS(proj.string))
+lakes.sp <- readOGR(dsn = "C:/Users/soliver/Documents/data", layer = "model_lakes") 
 names(lakes.sp)[1] = 'id'
-
 
 
 # fortify in prep for ggploting
