@@ -76,7 +76,7 @@ for (i in 1:(length(cutoffs)-1)) {
   
   # same as above except for April, May, June
   amj <- temp.dat %>% 
-    filter(month %in% 7:9) %>%
+    filter(month %in% 4:6) %>%
     group_by(site_id, year) %>%
     select(-c(time, month)) %>%
     summarise_all(funs(min = min, max = max, mean = mean)) %>%
