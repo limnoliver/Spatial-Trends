@@ -10,17 +10,12 @@ setwd("C:/Users/soliver/Documents/data/NLDAS")
 
 # get file list
 files <- list.files()
-files.short <- files[1:100]
 n <- length(files)
 drop.cols <- c('Rain', 'Snow')
 cutoffs <- c(1, seq(from = 1000, to = 10000, by = 1000), n)
 
 slope = function(x,y){
   coefficients(lm(y~x))[[2]]*10
-}
-
-col.lakes = function(lengths, names){
-  test <- lapply(lake.names, rep(lake.names, lengths))
 }
 
 for (i in 2:length(cutoffs)) {
