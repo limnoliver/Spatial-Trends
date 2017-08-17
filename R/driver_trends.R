@@ -18,6 +18,9 @@ slope = function(x,y){
   coefficients(lm(y~x))[[2]]*10
 }
 
+trends <- data.frame(site_id = NA, AirTemp_min = NA, AirTemp_max = NA, AirTemp_mean = NA, ShortWave_mean = NA, 
+                     LongWave_mean = NA, RelHum_mean = NA, WindSpeed_mean = NA, timescale = NA)
+
 for (i in 2:length(cutoffs)) {
   # read in subset of csvs
   temp.files <- files[cutoffs[i-1]:cutoffs[i]]
@@ -29,72 +32,78 @@ for (i in 2:length(cutoffs)) {
   lengths <- as.numeric(lapply(myfiles, nrow))
   df$site_id <- rep(lake.names, lengths)
   
+  #clear up memory for processing
+  remove(myfiles)
+  
+  # remove vars we are not interested in (rain, snow)
+  # create new columns for month and year
   temp.dat <- df %>%
     select(-c(Rain, Snow)) %>%
     mutate(month = month(time)) %>%
     mutate(year = year(time))
   
-  # edit some of these calculations - as some don't make sense (e.g., mins and maxes may not be useful, but maybe for air temp?)
+  # keep only July, August, September, 
+  # calculate means (+ min and max for temperature)
+  # calculate slope of trend between means~year
   jas <- temp.dat %>% 
     filter(month %in% 7:9) %>%
     group_by(site_id, year) %>%
     select(-c(time, month)) %>%
     summarise_all(funs(min = min, max = max, mean = mean)) %>%
-    summarise(ShortWave_min = slope(year, ShortWave_min), LongWave_min = slope(year, LongWave_min), AirTemp_min = slope(year, AirTemp_min), RelHum_min = slope(year, RelHum_min), WindSpeed_min = slope(year, WindSpeed_min),
-              ShortWave_max = slope(year, ShortWave_max), LongWave_max = slope(year, LongWave_max), AirTemp_max = slope(year, AirTemp_max), RelHum_max = slope(year, RelHum_max), WindSpeed_max = slope(year, WindSpeed_max),
-              ShortWave_mean = slope(year, ShortWave_mean), LongWave_mean = slope(year, LongWave_mean), AirTemp_mean = slope(year, AirTemp_mean), RelHum_mean = slope(year, RelHum_mean), WindSpeed_mean = slope(year, WindSpeed_mean)) %>%
-    mutate(scale = 'jas')
+    summarise(AirTemp_min = slope(year, AirTemp_min), AirTemp_max = slope(year, AirTemp_max), AirTemp_mean = slope(year, AirTemp_mean),
+              ShortWave_mean = slope(year, ShortWave_mean), LongWave_mean = slope(year, LongWave_mean),  RelHum_mean = slope(year, RelHum_mean), WindSpeed_mean = slope(year, WindSpeed_mean)) %>%
+    mutate(timescale = 'jas')
   
+  # same as above except for October, November, December
   ond <- temp.dat %>% 
     filter(month %in% 10:12) %>%
     group_by(site_id, year) %>%
     select(-c(time, month)) %>%
     summarise_all(funs(min = min, max = max, mean = mean)) %>%
-    summarise(ShortWave_min = slope(year, ShortWave_min), LongWave_min = slope(year, LongWave_min), AirTemp_min = slope(year, AirTemp_min), RelHum_min = slope(year, RelHum_min), WindSpeed_min = slope(year, WindSpeed_min),
-              ShortWave_max = slope(year, ShortWave_max), LongWave_max = slope(year, LongWave_max), AirTemp_max = slope(year, AirTemp_max), RelHum_max = slope(year, RelHum_max), WindSpeed_max = slope(year, WindSpeed_max),
-              ShortWave_mean = slope(year, ShortWave_mean), LongWave_mean = slope(year, LongWave_mean), AirTemp_mean = slope(year, AirTemp_mean), RelHum_mean = slope(year, RelHum_mean), WindSpeed_mean = slope(year, WindSpeed_mean)) %>%
-    mutate(scale = 'ond')
+    summarise(AirTemp_min = slope(year, AirTemp_min), AirTemp_max = slope(year, AirTemp_max), AirTemp_mean = slope(year, AirTemp_mean),
+              ShortWave_mean = slope(year, ShortWave_mean), LongWave_mean = slope(year, LongWave_mean),  RelHum_mean = slope(year, RelHum_mean), WindSpeed_mean = slope(year, WindSpeed_mean)) %>%
+    mutate(timescale = 'ond')
   
+  # same as above except for January, February, March
   jfm <- temp.dat %>% 
     filter(month %in% 1:3) %>%
     group_by(site_id, year) %>%
     select(-c(time, month)) %>%
     summarise_all(funs(min = min, max = max, mean = mean)) %>%
-    summarise(ShortWave_min = slope(year, ShortWave_min), LongWave_min = slope(year, LongWave_min), AirTemp_min = slope(year, AirTemp_min), RelHum_min = slope(year, RelHum_min), WindSpeed_min = slope(year, WindSpeed_min),
-              ShortWave_max = slope(year, ShortWave_max), LongWave_max = slope(year, LongWave_max), AirTemp_max = slope(year, AirTemp_max), RelHum_max = slope(year, RelHum_max), WindSpeed_max = slope(year, WindSpeed_max),
-              ShortWave_mean = slope(year, ShortWave_mean), LongWave_mean = slope(year, LongWave_mean), AirTemp_mean = slope(year, AirTemp_mean), RelHum_mean = slope(year, RelHum_mean), WindSpeed_mean = slope(year, WindSpeed_mean)) %>%
-    mutate(scale = 'jfm')
+    summarise(AirTemp_min = slope(year, AirTemp_min), AirTemp_max = slope(year, AirTemp_max), AirTemp_mean = slope(year, AirTemp_mean),
+              ShortWave_mean = slope(year, ShortWave_mean), LongWave_mean = slope(year, LongWave_mean),  RelHum_mean = slope(year, RelHum_mean), WindSpeed_mean = slope(year, WindSpeed_mean)) %>%
+    mutate(timescale = 'jfm')
   
+  # same as above except for April, May, June
   amj <- temp.dat %>% 
-    filter(month %in% 4:6) %>%
+    filter(month %in% 7:9) %>%
     group_by(site_id, year) %>%
     select(-c(time, month)) %>%
     summarise_all(funs(min = min, max = max, mean = mean)) %>%
-    summarise(ShortWave_min = slope(year, ShortWave_min), LongWave_min = slope(year, LongWave_min), AirTemp_min = slope(year, AirTemp_min), RelHum_min = slope(year, RelHum_min), WindSpeed_min = slope(year, WindSpeed_min),
-              ShortWave_max = slope(year, ShortWave_max), LongWave_max = slope(year, LongWave_max), AirTemp_max = slope(year, AirTemp_max), RelHum_max = slope(year, RelHum_max), WindSpeed_max = slope(year, WindSpeed_max),
-              ShortWave_mean = slope(year, ShortWave_mean), LongWave_mean = slope(year, LongWave_mean), AirTemp_mean = slope(year, AirTemp_mean), RelHum_mean = slope(year, RelHum_mean), WindSpeed_mean = slope(year, WindSpeed_mean)) %>%
-    mutate(scale = 'amj')
+    summarise(AirTemp_min = slope(year, AirTemp_min), AirTemp_max = slope(year, AirTemp_max), AirTemp_mean = slope(year, AirTemp_mean),
+              ShortWave_mean = slope(year, ShortWave_mean), LongWave_mean = slope(year, LongWave_mean),  RelHum_mean = slope(year, RelHum_mean), WindSpeed_mean = slope(year, WindSpeed_mean)) %>%
+    mutate(timescale = 'amj')
   
+  # Same as above but for all year
   annual <- temp.dat %>% 
     group_by(site_id, year) %>%
     select(-c(time, month)) %>%
     summarise_all(funs(min = min, max = max, mean = mean)) %>%
-    summarise(ShortWave_min = slope(year, ShortWave_min), LongWave_min = slope(year, LongWave_min), AirTemp_min = slope(year, AirTemp_min), RelHum_min = slope(year, RelHum_min), WindSpeed_min = slope(year, WindSpeed_min),
-              ShortWave_max = slope(year, ShortWave_max), LongWave_max = slope(year, LongWave_max), AirTemp_max = slope(year, AirTemp_max), RelHum_max = slope(year, RelHum_max), WindSpeed_max = slope(year, WindSpeed_max),
-              ShortWave_mean = slope(year, ShortWave_mean), LongWave_mean = slope(year, LongWave_mean), AirTemp_mean = slope(year, AirTemp_mean), RelHum_mean = slope(year, RelHum_mean), WindSpeed_mean = slope(year, WindSpeed_mean)) %>%
-    mutate(scale = 'annual')
+    summarise(AirTemp_min = slope(year, AirTemp_min), AirTemp_max = slope(year, AirTemp_max), AirTemp_mean = slope(year, AirTemp_mean),
+              ShortWave_mean = slope(year, ShortWave_mean), LongWave_mean = slope(year, LongWave_mean),  RelHum_mean = slope(year, RelHum_mean), WindSpeed_mean = slope(year, WindSpeed_mean)) %>%
+    mutate(timescale = 'annual')
   
-  trends[[i-1]] <- rbind(jas, ond, jfm, amj, annual)
+  #clear up space for processing 
+  remove(df)
+  
+  # add to trends df
+  trends <- rbind(trends, jas, ond, jfm, amj, annual)
   
 }
-myfiles <- lapply(files, readr::read_csv)
-temp <- readr::read_csv(files[1])
-# merge driver data
+trends <- trends[-1, ]
+setwd("~/Spatial-Trends")
+write.csv(trends, 'cached_data/driver_trends.csv', row.names = FALSE)
 
-# set vars of interest
 
-# calculate trends in driver data
-
-# map trends in driver data
 
 
