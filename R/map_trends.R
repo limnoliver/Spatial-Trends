@@ -3,7 +3,7 @@ library(ggplot2)
 library(mapproj)
 library(ggthemes)
 library(cowplot)
-source('R/maps')
+source('R/maps.R')
 trends <- readr::read_csv('cached_data/driver_trends.csv')
 trends <- unique(trends)
 
@@ -26,6 +26,8 @@ amj <- trends %>%
 annual <- trends %>%
   filter(timescale == 'annual')
 
+# this is a bad way to map - should just add all features to attributes table
+# but works for now, and won't speed up the actual plotting
 jas.map <- map.prep(stats = jas)
 ond.map <- map.prep(stats = ond)
 jfm.map <- map.prep(stats = jfm)
@@ -70,6 +72,8 @@ amj.map$AirTemp_mean_bins <- bins[findInterval(amj.map$AirTemp_mean, bins)]
 jas.map$AirTemp_mean_bins <- bins[findInterval(jas.map$AirTemp_mean, bins)]
 ond.map$AirTemp_mean_bins <- bins[findInterval(ond.map$AirTemp_mean, bins)]
 
+# make seasonal plots of all vars
+
 png('figures/airtemp_byseason.png',  res = res, height = fig.h, width = fig.w, units = 'in')
 plot_grid(plot.trends(jfm.map, 'AirTemp_mean_bins', 'Air Temp Decadal Trend', 'JFM', 1),
           plot.trends(amj.map, 'AirTemp_mean_bins', 'Air Temp Decadal Trend', 'AMJ', 1),
@@ -97,6 +101,15 @@ plot_grid(plot.trends(jfm.map, 'WindSpeed_mean', 'Windspeed Decadal Trend', 'JFM
           plot.trends(jas.map, 'WindSpeed_mean', 'Windspeed Decadal Trend', 'JAS', 1),
           plot.trends(ond.map, 'WindSpeed_mean', 'Windspeed Decadal Trend', 'OND', 1), nrow = 2)
 dev.off()
+
+png('figures/drivervars_annual.png', res = res, height = fig.h, width = fig.w, units = 'in')
+plot_grid(plot.trends(annual.map, 'ShortWave_mean', 'Shortwave Decadal Trend', 'annual', 0), 
+          plot.trends(annual.map, 'LongWave_mean', 'Longwave Decadal Trends', 'annual', 0), 
+          plot.trends(annual.map, 'RelHum_mean', 'Rel Humidity Decadal Trend', 'annual', 0),
+          plot.trends(annual.map, 'WindSpeed_mean', 'Windspeed Decadal Trend', 'annual', 1), nrow = 2)
+dev.off()
+
+
 
 
 
