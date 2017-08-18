@@ -34,3 +34,5 @@ WindSpeed.wide <- driver.trends %>%
   rename(c('site_id' = 'site_id', 'amj' = 'amj_WindSpeed_slope', 'annual' = 'annual_WindSpeed_slope', 'jas' = 'jas_WindSpeed_slope', 'jfm' = 'jfm_WindSpeed_slope', 'ond' = 'ond_WindSpeed_slope'))
 
 driver.trends.wide <- bind_cols(airtemp.wide, ShortWave.wide[,-1], LongWave.wide[,-1], RelHum.wide[,-1], WindSpeed.wide[,-1])
+
+write.csv(driver.trends.wide, 'cached_data/driver_trends_wide.csv', row.names = F)
