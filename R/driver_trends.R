@@ -40,7 +40,8 @@ for (i in 1:(length(cutoffs)-1)) {
   temp.dat <- df %>%
     select(-c(Rain, Snow)) %>%
     mutate(month = month(time)) %>%
-    mutate(year = year(time))
+    mutate(year = year(time)) %>% 
+    filter(year %in% 1980:2015)
   
   # keep only July, August, September, 
   # calculate means (+ min and max for temperature)
