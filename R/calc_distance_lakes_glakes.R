@@ -9,6 +9,7 @@ library(maps)
 library(sbtools)
 library(geosphere)
 library(ggplot2)
+library(rgdal)
 
 # log into sb
 authenticate_sb()
@@ -31,7 +32,7 @@ ontario <- readOGR("raw_data/GreatLakesandWa/hydro_p_LakeOntario/hydro_p_LakeOnt
 greatlakes <- rbind(erie, superior, michigan, huron, ontario)
 
 # read in lake trends with IDs
-lake.trends <- readr::read_csv('cached_data/lake_trends.csv')
+lake.trends <- read.csv('cached_data/lake_trends.csv')
 
 # read in air temp trends with IDs
 driver.trends.wide <- readr::read_csv('cached_data/driver_trends_wide.csv')
@@ -50,6 +51,7 @@ lake.trends$distance <- distance[,1]
 lake.trends$nearest_lake <- greatlakes$NAMEEN[distance[,4]]
 lake.trends$distance_km <- lake.trends$distance/1000
 
+write.csv(lake.trends, 'cached_data/distance_lake_glakes_ID.csv', row.names = F)
 library(RColorBrewer)
 my.cols <- brewer.pal(4, 'Dark2')
 
