@@ -12,5 +12,6 @@ lake.trends <- lake.dat %>%
   filter(year %in% 1980:2015) %>%
   group_by(site_id) %>%
   summarise(mean_surf_jas_slope = slope(year, mean_surf_jas))
+
 setwd("~/Spatial-Trends")
 write.csv(lake.trends, 'cached_data/lake_trends.csv', row.names = F)
