@@ -19,7 +19,7 @@ lakes.df <- merge(lakes.sp.f, lakes.sp, by = 'id', all.x = TRUE)
 
 # merge with stats
 # read in lake trends
-lake.trends <- readr::read_csv('cached_data/lake_trends.csv')
+lake.trends <- read.csv('cached_data/lake_trends.csv')
 names(lake.trends)[1] = 'id'
 map.dat <- merge(lakes.df, lake.trends, by = 'id', all.x = TRUE)
 
