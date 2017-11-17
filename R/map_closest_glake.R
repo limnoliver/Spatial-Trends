@@ -41,7 +41,6 @@ p <- ggplot() +
   scale_fill_manual(values = my.cols) +
   geom_polygon(data = lakes.dat, aes_string('long', 'lat', group = 'group', fill = 'nearest_lake', color = 'nearest_lake')) +
   coord_map('albers', lat0 = 41, lat1 = 50, xlim = c(-97.6, -81), ylim = c(41.5, 49.5)) +
-  #facet_wrap(~timescale, scales = 'fixed', nrow = 2, ncol = 2)
   theme_map() +
   theme(legend.position = c(0.05, 0)) +
   guides(fill = guide_legend(title = 'Nearest Great Lake', title.position = 'top',  label.position = 'right', ncol = 2))
