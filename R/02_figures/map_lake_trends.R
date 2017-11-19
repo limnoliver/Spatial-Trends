@@ -33,7 +33,7 @@ res = 200
 get.cols <- function(var){
   bins = pretty(quantile(var, probs = c(0.005, 0.995), na.rm = T), 100)
   key.bins = pretty(quantile(var, probs = c(0.0005,0.995), na.rm = T), 5, min.n = 4)
-  pal = colorRampPalette(rev(brewer.pal(9, 'RdYlBu')))(length(bins))
+  pal = colorRampPalette(brewer.pal(9, 'YlOrRd'))(length(bins))
   bin.cols = bins[findInterval(var, bins, all.inside = TRUE)]
   return(list(bin.cols, key.bins, pal))
 }
@@ -53,9 +53,13 @@ plot.trends.cont <- function(map.dat, var, var.legend, season, col.bins) {
     theme(legend.position = c(0.5, 0.8), 
           legend.justification = c(0, 0),
           legend.direction = 'horizontal',
-          legend.key = element_rect(fill = "transparent", colour = "transparent")) +
+          legend.key = element_rect(fill = "transparent", colour = "transparent"),
+          plot.background = element_rect(fill = 'transparent', color = NA)) +
     guides(fill = guide_legend(title.position = 'top', label.position = 'bottom', nrow = 1))
 }
 
-p <- plot.trends.cont(map.dat, 'mean_surf_jas_slope', 'JAS Surface Temp \nDecadal Trend', 'JAS', col.bins = get.cols(map.dat$mean_surf_jas_slope))
-ggsave("figures/JAS_lake_surface_trend.png", p)
+
+
+p <- plot.trends.cont(map.dat, 'mean_surf_jas_slope', 'JAS Surface Temp \nDecadal Trend', 'JAS', 
+                      col.bins = get.cols(map.dat$mean_surf_jas_slope))
+ggsave("figures/JAS_lake_surface_trend.png", p, bg = 'transparent')
