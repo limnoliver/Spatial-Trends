@@ -47,7 +47,10 @@ p <- ggplot() +
   geom_polygon(data = lakes.dat, aes_string('long', 'lat', group = 'group', fill = 'nearest_lake2', color = 'nearest_lake2')) +
   coord_map('albers', lat0 = 41, lat1 = 50, xlim = c(-97.6, -81), ylim = c(41.5, 49.5)) +
   theme_map() +
-  theme(legend.position = c(0.05, 0)) +
+  theme(legend.position = c(0.05, -0.05), legend.text = element_text(size = 16), 
+        legend.title = element_text(size = 16), 
+        plot.background = element_rect(fill = 'transparent', colour = NA),
+        legend.background = element_rect(fill = 'transparent', colour = NA)) +
   guides(fill = guide_legend(title = 'Nearest Great Lake', title.position = 'top',  label.position = 'right', ncol = 2))
 
 # make a map of anomolous data (in MN?) that is ~300km from Lake Superior and has 
@@ -85,6 +88,6 @@ p2 <- ggplot(data = usa, aes(x = long, y = lat, group = group)) +
   theme_map() +
   theme(plot.background = element_rect(fill = 'transparent', colour = NA))
 
-ggsave('figures/map_nearest_glake.png', p)
+ggsave('figures/map_nearest_glake.png', p, bg = 'transparent')
 ggsave('figures/study_site_map.png', p2, bg = 'transparent')
 ggsave('figures/LakeSuperior_300km_anomalies.png', p.anomaly)
