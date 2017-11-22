@@ -45,13 +45,14 @@ p <- ggplot() +
   scale_color_manual(values = my.cols, guide = F) +
   scale_fill_manual(values = my.cols) +
   geom_polygon(data = lakes.dat, aes_string('long', 'lat', group = 'group', fill = 'nearest_lake2', color = 'nearest_lake2')) +
-  coord_map('albers', lat0 = 41, lat1 = 50, xlim = c(-97.6, -81), ylim = c(41.5, 49.5)) +
+  coord_map('albers', lat0 = 41, lat1 = 50, xlim = c(-97.6, -81), ylim = c(40.5, 49.5)) +
   theme_map() +
-  theme(legend.position = c(0.05, -0.05), legend.text = element_text(size = 16), 
-        legend.title = element_text(size = 16), 
-        plot.background = element_rect(fill = 'transparent', colour = NA),
-        legend.background = element_rect(fill = 'transparent', colour = NA)) +
-  guides(fill = guide_legend(title = 'Nearest Great Lake', title.position = 'top',  label.position = 'right', ncol = 2))
+  theme(legend.position = c(0.05, 0), legend.text = element_text(size = 18), 
+        legend.title = element_text(size = 20),
+        legend.key.size = unit(1.8, 'lines'),
+        legend.background = element_rect(fill = 'transparent', color = NA)) +
+  guides(fill = guide_legend(title = 'Nearest Great Lake', 
+                             title.position = 'top',  label.position = 'right', ncol = 2))
 
 # make a map of anomolous data (in MN?) that is ~300km from Lake Superior and has 
 # elevated trends (see distance ~ normalized trend plot)
@@ -77,7 +78,6 @@ p.anomaly <- ggplot() +
 
 # create a small US map + great lakes with bounding box around study region
 usa <- map_data("usa")
-states <- mape_data("states")
 p2 <- ggplot(data = usa, aes(x = long, y = lat, group = group)) +
   geom_polygon(fill = NA, color = 'darkgray') +
   geom_polygon(data = greatlakes, aes(long, lat, group = group), fill = 'lightblue', color = 'lightblue', size =1) +
@@ -85,9 +85,8 @@ p2 <- ggplot(data = usa, aes(x = long, y = lat, group = group)) +
   geom_polygon(data = study.site, aes(long, lat, group = group),fill = 'darkgray', color = 'white') +  geom_polygon(data = study.site, aes(long, lat, group = group),fill = 'darkgray', color = 'white') +
   geom_rect(aes(xmin = -97.6, xmax = -81, ymin = 41, ymax = 50), fill = NA, color = 'red', size = 2) +
   coord_map('albers', lat0 = 23, lat1 = 49, ylim = c(23, 49), xlim = c(-125, -65)) +
-  theme_map() +
-  theme(plot.background = element_rect(fill = 'transparent', colour = NA))
+  theme_map()
 
-ggsave('figures/map_nearest_glake.png', p, bg = 'transparent')
-ggsave('figures/study_site_map.png', p2, bg = 'transparent')
+ggsave('figures/map_nearest_glake.png', p)
+ggsave('figures/study_site_map.png', p2)
 ggsave('figures/LakeSuperior_300km_anomalies.png', p.anomaly)

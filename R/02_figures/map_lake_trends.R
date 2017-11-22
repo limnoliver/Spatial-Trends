@@ -50,16 +50,20 @@ plot.trends.cont <- function(map.dat, var, var.legend, season, col.bins) {
     coord_map('albers', lat0 = 41, lat1 = 50) +
     #facet_wrap(~timescale, scales = 'fixed', nrow = 2, ncol = 2)
     theme_map() +
-    theme(legend.position = c(0.5, 0.8), 
+    theme(legend.position = c(0.45, 0.8), 
           legend.justification = c(0, 0),
           legend.direction = 'horizontal',
-          legend.key = element_rect(fill = "transparent", colour = "transparent"),
-          plot.background = element_rect(fill = 'transparent', color = NA)) +
-    guides(fill = guide_legend(title.position = 'top', label.position = 'bottom', nrow = 1))
+          legend.title = element_text(size = 16),
+          legend.text = element_text(size = 14),
+          legend.key.width = unit(1.5, 'line'), 
+          legend.key.height = unit(1.5, 'line'), 
+          legend.text.align = 0.5) +
+    guides(fill = guide_legend(title.position = 'top', title.vjust = -0.3, 
+                               label.position = 'bottom', nrow = 1))
 }
 
 
 
 p <- plot.trends.cont(map.dat, 'mean_surf_jas_slope', 'JAS Surface Temp \nDecadal Trend', 'JAS', 
                       col.bins = get.cols(map.dat$mean_surf_jas_slope))
-ggsave("figures/JAS_lake_surface_trend.png", p, bg = 'transparent')
+ggsave("figures/JAS_lake_surface_trend.png", p)
